@@ -1,0 +1,128 @@
+{
+  "id": "wow_orders",
+  "question": "Compare the number of orders in the week of 2020-11-23 to 2020-11-29 with the previous week (2020-11-16 to 2020-11-22). What is the absolute and relative change?",
+  "answer": "There were 533 orders in the week of 2020-11-23 to 2020-11-29, compared to 381 orders in the week of 2020-11-16 to 2020-11-22.\n\nThis represents an absolute increase of 152 orders and a relative increase of 39.9%.",
+  "tool_calls": [
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-23",
+        "end_date": "2020-11-29"
+      },
+      "response": {
+        "revenue": 47897.0,
+        "currency": "USD",
+        "orders": 533,
+        "units": 2931,
+        "purchasers": 497,
+        "sessions": 27788,
+        "purchasing_sessions": 514,
+        "average_order_value": 89.86,
+        "conversion_rate": 0.0185,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-23",
+            "end_date": "2020-11-29"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 89057149,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    },
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-16",
+        "end_date": "2020-11-22"
+      },
+      "response": {
+        "revenue": 38156.0,
+        "currency": "USD",
+        "orders": 381,
+        "units": 2464,
+        "purchasers": 364,
+        "sessions": 25923,
+        "purchasing_sessions": 376,
+        "average_order_value": 100.15,
+        "conversion_rate": 0.0145,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-16",
+            "end_date": "2020-11-22"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 84399975,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 10.694,
+  "golden_responses": [
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-16",
+        "end_date": "2020-11-22"
+      },
+      "response": {
+        "revenue": 38156.0,
+        "currency": "USD",
+        "orders": 381,
+        "units": 2464,
+        "purchasers": 364,
+        "sessions": 25923,
+        "purchasing_sessions": 376,
+        "average_order_value": 100.15,
+        "conversion_rate": 0.0145,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-16",
+            "end_date": "2020-11-22"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 84399975,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    },
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-23",
+        "end_date": "2020-11-29"
+      },
+      "response": {
+        "revenue": 47897.0,
+        "currency": "USD",
+        "orders": 533,
+        "units": 2931,
+        "purchasers": 497,
+        "sessions": 27788,
+        "purchasing_sessions": 514,
+        "average_order_value": 89.86,
+        "conversion_rate": 0.0185,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-23",
+            "end_date": "2020-11-29"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 89057149,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

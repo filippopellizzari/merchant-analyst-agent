@@ -1,0 +1,144 @@
+{
+  "id": "nov_top5_revenue",
+  "question": "What were the top 5 products by revenue in November 2020?",
+  "answer": "The top 5 products by revenue in November 2020 (date range: **2020-11-01 to 2020-11-30**) were:\n\n| Rank | Product Name | Category | Revenue | Units | Orders |\n| --- | --- | --- | --- | --- | --- |\n| 1 | Google Zip Hoodie F/C | Apparel | $6,660.00 | 130 | 60 |\n| 2 | Google Badge Heavyweight Pullover Black | Apparel | $6,091.00 | 126 | 82 |\n| 3 | Google Men's Tech Fleece Grey | Apparel | $4,654.00 | 62 | 32 |\n| 4 | Google Crewneck Sweatshirt Navy | Apparel | $4,312.00 | 96 | 68 |\n| 5 | Super G Unisex Joggers | Shop by Brand | $4,102.00 | 133 | 63 |",
+  "tool_calls": [
+    {
+      "name": "get_top_products",
+      "args": {
+        "start_date": "2020-11-01",
+        "metric": "REVENUE",
+        "end_date": "2020-11-30",
+        "limit": 5
+      },
+      "response": {
+        "metric": "REVENUE",
+        "rows": [
+          {
+            "rank": 1,
+            "item_name": "Google Zip Hoodie F/C",
+            "item_category": "Apparel",
+            "revenue": 6660.0,
+            "units": 130,
+            "orders": 60
+          },
+          {
+            "rank": 2,
+            "item_name": "Google Badge Heavyweight Pullover Black",
+            "item_category": "Apparel",
+            "revenue": 6091.0,
+            "units": 126,
+            "orders": 82
+          },
+          {
+            "rank": 3,
+            "item_name": "Google Men's Tech Fleece Grey",
+            "item_category": "Apparel",
+            "revenue": 4654.0,
+            "units": 62,
+            "orders": 32
+          },
+          {
+            "rank": 4,
+            "item_name": "Google Crewneck Sweatshirt Navy",
+            "item_category": "Apparel",
+            "revenue": 4312.0,
+            "units": 96,
+            "orders": 68
+          },
+          {
+            "rank": 5,
+            "item_name": "Super G Unisex Joggers",
+            "item_category": "Shop by Brand",
+            "revenue": 4102.0,
+            "units": 133,
+            "orders": 63
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "0a6a30d2abf31761",
+          "bytes_processed": 74980200,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.5-flash",
+  "events": 3,
+  "duration_s": 88.762,
+  "golden_responses": [
+    {
+      "tool": "get_top_products",
+      "args": {
+        "start_date": "2020-11-01",
+        "end_date": "2020-11-30",
+        "metric": "REVENUE",
+        "limit": 5
+      },
+      "response": {
+        "metric": "REVENUE",
+        "rows": [
+          {
+            "rank": 1,
+            "item_name": "Google Zip Hoodie F/C",
+            "item_category": "Apparel",
+            "revenue": 6660.0,
+            "units": 130,
+            "orders": 60
+          },
+          {
+            "rank": 2,
+            "item_name": "Google Badge Heavyweight Pullover Black",
+            "item_category": "Apparel",
+            "revenue": 6091.0,
+            "units": 126,
+            "orders": 82
+          },
+          {
+            "rank": 3,
+            "item_name": "Google Men's Tech Fleece Grey",
+            "item_category": "Apparel",
+            "revenue": 4654.0,
+            "units": 62,
+            "orders": 32
+          },
+          {
+            "rank": 4,
+            "item_name": "Google Crewneck Sweatshirt Navy",
+            "item_category": "Uncategorized Items",
+            "revenue": 4312.0,
+            "units": 96,
+            "orders": 68
+          },
+          {
+            "rank": 5,
+            "item_name": "Super G Unisex Joggers",
+            "item_category": "Shop by Brand",
+            "revenue": 4102.0,
+            "units": 133,
+            "orders": 63
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "0a6a30d2abf31761",
+          "bytes_processed": 74980200,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

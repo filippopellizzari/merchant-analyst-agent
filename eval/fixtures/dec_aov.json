@@ -1,0 +1,70 @@
+{
+  "id": "dec_aov",
+  "question": "What was the average order value in December 2020?",
+  "answer": "The average order value in December 2020 was **$69.50**.\n\n* **Date Range:** 2020-12-01 to 2020-12-31\n* **Total Revenue:** $160,555.00\n* **Total Orders:** 2,310\n* **Average Order Value (AOV):** $69.50 ($160,555.00 ÷ 2,310 orders)",
+  "tool_calls": [
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "end_date": "2020-12-31",
+        "start_date": "2020-12-01"
+      },
+      "response": {
+        "revenue": 160555.0,
+        "currency": "USD",
+        "orders": 2310,
+        "units": 10125,
+        "purchasers": 1975,
+        "sessions": 133368,
+        "purchasing_sessions": 2116,
+        "average_order_value": 69.5,
+        "conversion_rate": 0.0159,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 384884587,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.5-flash",
+  "events": 3,
+  "duration_s": 59.842,
+  "golden_responses": [
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31"
+      },
+      "response": {
+        "revenue": 160555.0,
+        "currency": "USD",
+        "orders": 2310,
+        "units": 10125,
+        "purchasers": 1975,
+        "sessions": 133368,
+        "purchasing_sessions": 2116,
+        "average_order_value": 69.5,
+        "conversion_rate": 0.0159,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 384884587,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

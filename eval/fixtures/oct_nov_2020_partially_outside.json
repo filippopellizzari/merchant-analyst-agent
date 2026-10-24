@@ -1,0 +1,70 @@
+{
+  "id": "oct_nov_2020_partially_outside",
+  "question": "What was total revenue from 1 October to 30 November 2020?",
+  "answer": "The total revenue for the period of November 1, 2020, to November 30, 2020, was $144,260.00.\n\nPlease note that the dataset only contains data from 2020-11-01 onwards, so I am unable to provide figures for October 2020.",
+  "tool_calls": [
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "end_date": "2020-11-30",
+        "start_date": "2020-11-01"
+      },
+      "response": {
+        "revenue": 144260.0,
+        "currency": "USD",
+        "orders": 1258,
+        "units": 9130,
+        "purchasers": 1532,
+        "sessions": 108401,
+        "purchasing_sessions": 1617,
+        "average_order_value": 114.67,
+        "conversion_rate": 0.0149,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 349200967,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 48.126,
+  "golden_responses": [
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-01",
+        "end_date": "2020-11-30"
+      },
+      "response": {
+        "revenue": 144260.0,
+        "currency": "USD",
+        "orders": 1258,
+        "units": 9130,
+        "purchasers": 1532,
+        "sessions": 108401,
+        "purchasing_sessions": 1617,
+        "average_order_value": 114.67,
+        "conversion_rate": 0.0149,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 349200967,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

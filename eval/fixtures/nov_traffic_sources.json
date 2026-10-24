@@ -1,0 +1,160 @@
+{
+  "id": "nov_traffic_sources",
+  "question": "Which 5 traffic sources brought the most sessions in November 2020?",
+  "answer": "For November 2020 (2020-11-01 to 2020-11-30), the top 5 traffic sources by sessions were:\n\n| Rank | Source | Medium | Sessions |\n| :--- | :--- | :--- | :--- |\n| 1 | google | organic | 33,161 |\n| 2 | (direct) | (none) | 25,050 |\n| 3 | <Other> | <Other> | 14,971 |\n| 4 | <Other> | referral | 10,519 |\n| 5 | shop.googlemerchandisestore.com | referral | 9,274 |",
+  "tool_calls": [
+    {
+      "name": "get_traffic_by_source",
+      "args": {
+        "start_date": "2020-11-01",
+        "limit": 5,
+        "end_date": "2020-11-30"
+      },
+      "response": {
+        "rows": [
+          {
+            "rank": 1,
+            "source": "google",
+            "medium": "organic",
+            "sessions": 33161,
+            "purchasers": 395,
+            "orders": 321,
+            "revenue": 37360.0,
+            "conversion_rate": 0.012
+          },
+          {
+            "rank": 2,
+            "source": "(direct)",
+            "medium": "(none)",
+            "sessions": 25050,
+            "purchasers": 348,
+            "orders": 267,
+            "revenue": 31133.0,
+            "conversion_rate": 0.014
+          },
+          {
+            "rank": 3,
+            "source": "<Other>",
+            "medium": "<Other>",
+            "sessions": 14971,
+            "purchasers": 175,
+            "orders": 153,
+            "revenue": 14795.0,
+            "conversion_rate": 0.0118
+          },
+          {
+            "rank": 4,
+            "source": "<Other>",
+            "medium": "referral",
+            "sessions": 10519,
+            "purchasers": 163,
+            "orders": 117,
+            "revenue": 15094.0,
+            "conversion_rate": 0.0157
+          },
+          {
+            "rank": 5,
+            "source": "shop.googlemerchandisestore.com",
+            "medium": "referral",
+            "sessions": 9274,
+            "purchasers": 197,
+            "orders": 165,
+            "revenue": 17649.0,
+            "conversion_rate": 0.0215
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "3916893b260632dc",
+          "bytes_processed": 379573166,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 12.122,
+  "golden_responses": [
+    {
+      "tool": "get_traffic_by_source",
+      "args": {
+        "start_date": "2020-11-01",
+        "end_date": "2020-11-30",
+        "limit": 5
+      },
+      "response": {
+        "rows": [
+          {
+            "rank": 1,
+            "source": "google",
+            "medium": "organic",
+            "sessions": 33161,
+            "purchasers": 395,
+            "orders": 321,
+            "revenue": 37360.0,
+            "conversion_rate": 0.012
+          },
+          {
+            "rank": 2,
+            "source": "(direct)",
+            "medium": "(none)",
+            "sessions": 25050,
+            "purchasers": 348,
+            "orders": 267,
+            "revenue": 31133.0,
+            "conversion_rate": 0.014
+          },
+          {
+            "rank": 3,
+            "source": "<Other>",
+            "medium": "<Other>",
+            "sessions": 14971,
+            "purchasers": 175,
+            "orders": 153,
+            "revenue": 14795.0,
+            "conversion_rate": 0.0118
+          },
+          {
+            "rank": 4,
+            "source": "<Other>",
+            "medium": "referral",
+            "sessions": 10519,
+            "purchasers": 163,
+            "orders": 117,
+            "revenue": 15094.0,
+            "conversion_rate": 0.0157
+          },
+          {
+            "rank": 5,
+            "source": "shop.googlemerchandisestore.com",
+            "medium": "referral",
+            "sessions": 9274,
+            "purchasers": 197,
+            "orders": 165,
+            "revenue": 17649.0,
+            "conversion_rate": 0.0215
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "3916893b260632dc",
+          "bytes_processed": 379573166,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

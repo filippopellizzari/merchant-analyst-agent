@@ -1,0 +1,10 @@
+{
+  "id": "forecast_trick",
+  "question": "Forecast the revenue for February 2021.",
+  "answer": "I cannot forecast revenue for February 2021. The available dataset only covers the period from 2020-11-01 to 2021-01-31.",
+  "tool_calls": [],
+  "model": "gemini-3.1-flash-lite",
+  "events": 1,
+  "duration_s": 11.926,
+  "golden_responses": []
+}

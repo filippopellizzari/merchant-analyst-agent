@@ -1,0 +1,222 @@
+{
+  "id": "jan_top_products_default_limit",
+  "question": "List the top products in January 2021.",
+  "answer": "The top products by revenue for January 2021 (2021-01-01 to 2021-01-31) are:\n\n| Rank | Product Name | Revenue | Units | Orders |\n| :--- | :--- | :--- | :--- | :--- |\n| 1 | Google Crewneck Sweatshirt Green | $3,542.00 | 78 | 70 |\n| 2 | Google Black Cloud Zip Hoodie | $3,137.00 | 55 | 47 |\n| 3 | Google Sherpa Zip Hoodie Charcoal | $2,545.00 | 46 | 39 |\n| 4 | Google Sherpa Zip Hoodie Navy | $2,064.00 | 36 | 32 |\n| 5 | Google Zip Hoodie F/C | $1,632.00 | 33 | 28 |\n| 6 | Gift Card- $100.00 | $1,200.00 | 12 | 1 |\n| 7 | Google Men's Tech Fleece Grey | $1,172.00 | 16 | 12 |\n| 8 | Google Campus Bike | $1,128.00 | 34 | 28 |\n| 9 | Google Knit Blanket | $1,069.00 | 15 | 14 |\n| 10 | Google Cotopaxi Shell | $1,018.00 | 26 | 26 |",
+  "tool_calls": [
+    {
+      "name": "get_top_products",
+      "args": {
+        "start_date": "2021-01-01",
+        "end_date": "2021-01-31"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "rows": [
+          {
+            "rank": 1,
+            "item_name": "Google Crewneck Sweatshirt Green",
+            "item_category": "Apparel",
+            "revenue": 3542.0,
+            "units": 78,
+            "orders": 70
+          },
+          {
+            "rank": 2,
+            "item_name": "Google Black Cloud Zip Hoodie",
+            "item_category": "Apparel",
+            "revenue": 3137.0,
+            "units": 55,
+            "orders": 47
+          },
+          {
+            "rank": 3,
+            "item_name": "Google Sherpa Zip Hoodie Charcoal",
+            "item_category": "Apparel",
+            "revenue": 2545.0,
+            "units": 46,
+            "orders": 39
+          },
+          {
+            "rank": 4,
+            "item_name": "Google Sherpa Zip Hoodie Navy",
+            "item_category": "Apparel",
+            "revenue": 2064.0,
+            "units": 36,
+            "orders": 32
+          },
+          {
+            "rank": 5,
+            "item_name": "Google Zip Hoodie F/C",
+            "item_category": "Apparel",
+            "revenue": 1632.0,
+            "units": 33,
+            "orders": 28
+          },
+          {
+            "rank": 6,
+            "item_name": "Gift Card- $100.00",
+            "item_category": "Gift Cards",
+            "revenue": 1200.0,
+            "units": 12,
+            "orders": 1
+          },
+          {
+            "rank": 7,
+            "item_name": "Google Men's Tech Fleece Grey",
+            "item_category": "Apparel",
+            "revenue": 1172.0,
+            "units": 16,
+            "orders": 12
+          },
+          {
+            "rank": 8,
+            "item_name": "Google Campus Bike",
+            "item_category": "Accessories",
+            "revenue": 1128.0,
+            "units": 34,
+            "orders": 28
+          },
+          {
+            "rank": 9,
+            "item_name": "Google Knit Blanket",
+            "item_category": "Lifestyle",
+            "revenue": 1069.0,
+            "units": 15,
+            "orders": 14
+          },
+          {
+            "rank": 10,
+            "item_name": "Google Cotopaxi Shell",
+            "item_category": "Apparel",
+            "revenue": 1018.0,
+            "units": 26,
+            "orders": 26
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2021-01-01",
+            "end_date": "2021-01-31"
+          },
+          "clamped": false,
+          "sql_hash": "0a6a30d2abf31761",
+          "bytes_processed": 67516474,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 11.751,
+  "golden_responses": [
+    {
+      "tool": "get_top_products",
+      "args": {
+        "start_date": "2021-01-01",
+        "end_date": "2021-01-31",
+        "metric": "REVENUE",
+        "limit": 10
+      },
+      "response": {
+        "metric": "REVENUE",
+        "rows": [
+          {
+            "rank": 1,
+            "item_name": "Google Crewneck Sweatshirt Green",
+            "item_category": "Apparel",
+            "revenue": 3542.0,
+            "units": 78,
+            "orders": 70
+          },
+          {
+            "rank": 2,
+            "item_name": "Google Black Cloud Zip Hoodie",
+            "item_category": "Apparel",
+            "revenue": 3137.0,
+            "units": 55,
+            "orders": 47
+          },
+          {
+            "rank": 3,
+            "item_name": "Google Sherpa Zip Hoodie Charcoal",
+            "item_category": "Apparel",
+            "revenue": 2545.0,
+            "units": 46,
+            "orders": 39
+          },
+          {
+            "rank": 4,
+            "item_name": "Google Sherpa Zip Hoodie Navy",
+            "item_category": "Apparel",
+            "revenue": 2064.0,
+            "units": 36,
+            "orders": 32
+          },
+          {
+            "rank": 5,
+            "item_name": "Google Zip Hoodie F/C",
+            "item_category": "Apparel",
+            "revenue": 1632.0,
+            "units": 33,
+            "orders": 28
+          },
+          {
+            "rank": 6,
+            "item_name": "Gift Card- $100.00",
+            "item_category": "Gift Cards",
+            "revenue": 1200.0,
+            "units": 12,
+            "orders": 1
+          },
+          {
+            "rank": 7,
+            "item_name": "Google Men's Tech Fleece Grey",
+            "item_category": "Apparel",
+            "revenue": 1172.0,
+            "units": 16,
+            "orders": 12
+          },
+          {
+            "rank": 8,
+            "item_name": "Google Campus Bike",
+            "item_category": "Accessories",
+            "revenue": 1128.0,
+            "units": 34,
+            "orders": 28
+          },
+          {
+            "rank": 9,
+            "item_name": "Google Knit Blanket",
+            "item_category": "Lifestyle",
+            "revenue": 1069.0,
+            "units": 15,
+            "orders": 14
+          },
+          {
+            "rank": 10,
+            "item_name": "Google Cotopaxi Shell",
+            "item_category": "Apparel",
+            "revenue": 1018.0,
+            "units": 26,
+            "orders": 26
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2021-01-01",
+            "end_date": "2021-01-31"
+          },
+          "clamped": false,
+          "sql_hash": "0a6a30d2abf31761",
+          "bytes_processed": 67516474,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

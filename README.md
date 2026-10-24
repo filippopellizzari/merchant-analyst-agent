@@ -32,22 +32,49 @@ bytes processed, cache hit) so an answer can be audited.
 
 ## Example
 
+Real transcripts, recorded by the eval harness against BigQuery and Gemini
+(`eval/fixtures/`):
+
 ```
 $ make agent-cli Q="What were the top 3 products by revenue in December 2020?"
 
-tool  get_top_products(start_date=2020-12-01, end_date=2020-12-31, metric=REVENUE, limit=3)
-      -> 3 rows, currency USD, clamped=false
+model: gemini-3.5-flash  events: 3  tool calls: 1
+  [1] get_top_products(end_date='2020-12-31', limit=3, start_date='2020-12-01', metric='REVENUE')
+      -> metric='REVENUE' rows[3] currency='USD' meta=2020-12-01..2020-12-31
 
-In December 2020 (2020-12-01 to 2020-12-31) the top products by revenue were:
+The top 3 products by revenue in December 2020 were the Google Crewneck Sweatshirt Navy,
+Google Zip Hoodie F/C, and Super G Unisex Joggers.
 
-| # | Product | Revenue | Units |
-|---|---------|---------|-------|
-| 1 | ...     | $...    | ...   |
+Date Range: 2020-12-01 to 2020-12-31 (inclusive)
+
+| Rank | Product Name                    | Category      | Revenue   | Units Sold | Orders |
+| ---- | ------------------------------- | ------------- | --------- | ---------- | ------ |
+| 1    | Google Crewneck Sweatshirt Navy | Apparel       | $5,665.00 | 124        | 112    |
+| 2    | Google Zip Hoodie F/C           | Apparel       | $5,496.00 | 110        | 99     |
+| 3    | Super G Unisex Joggers          | Shop by Brand | $4,725.00 | 153        | 137    |
 ```
 
-A live transcript is recorded in the eval fixtures once BigQuery and Gemini
-credentials are configured (see below). Nothing in this repo is hard-coded
-from the dataset.
+A question that needs arithmetic: the agent shows both inputs, and the
+harness grounds `11.3%` as `(b - a) / a` over the two tool results.
+
+```
+Q: How did revenue change from November to December 2020?
+
+  [1] get_sales_summary(start_date='2020-11-01', end_date='2020-11-30')
+  [2] get_sales_summary(start_date='2020-12-01', end_date='2020-12-31')
+
+Revenue in December 2020 increased by 11.3% compared to November 2020
+(from $144,260.00 to $160,555.00).
+```
+
+And one it must refuse:
+
+```
+Q: Forecast revenue for February 2021.
+
+I cannot forecast revenue for February 2021. The available dataset only covers
+the period from 2020-11-01 to 2021-01-31.
+```
 
 ## Quickstart
 
@@ -104,8 +131,34 @@ Cases can also require that specific tools were (or were not) called and that
 a date range was clamped. The run exits non-zero on any failure, so it can
 gate a CI job. Full details in [eval/README.md](eval/README.md).
 
-On the Gemini free tier (5 requests per minute per model) use `--pace 25`;
-quota and overload errors are retried automatically (`--retries`, default 3).
+On the Gemini free tier (5 requests per minute and a small daily cap per
+model) use `--pace 25`; quota and overload errors are retried automatically
+(`--retries`, default 3) and a daily-cap error stops the run instead of
+waiting it out.
+
+### Current results
+
+All 18 cases pass: 145 numeric mentions across the answers, every one grounded
+in a tool result, all golden values present. The committed report is
+[eval/reports/sample-report.md](eval/reports/sample-report.md); the recorded
+fixtures in `eval/fixtures/` let CI replay the full check without model or
+BigQuery access (`--replay`).
+
+| case | grounded | golden | case | grounded | golden |
+|---|---|---|---|---|---|
+| dec_totals | 2/2 | 2/2 | dec_conversion_rate | 3/3 | 2/2 |
+| dec_aov | 6/6 | 1/1 | dec_funnel_dropoff | 13/13 | 2/2 |
+| nov_top5_revenue | 21/21 | 3/3 | nov_traffic_sources | 11/11 | 2/2 |
+| dec_top3_units | 17/17 | 2/2 | window_geo_top5 | 11/11 | 2/2 |
+| jan_top_products_default_limit | 41/41 | 2/2 | march_2021_outside_window | 0/0 | - |
+| dec_best_day | 1/1 | 1/1 | oct_nov_2020_partially_outside | 1/1 | 1/1 |
+| jan_worst_day | 1/1 | 1/1 | dataset_description | 0/0 | 2/2 |
+| pre_christmas_trend | 8/8 | 1/1 | forecast_trick | 0/0 | - |
+| mom_revenue_change | 5/5 | 2/2 | wow_orders | 4/4 | 2/2 |
+
+The fixtures were recorded on 2026-10-24 with `gemini-3.5-flash` (first four
+cases) and `gemini-3.1-flash-lite` (the rest) after the free tier's daily
+cap for the first model was reached; each fixture records its model.
 
 ## Repository layout
 

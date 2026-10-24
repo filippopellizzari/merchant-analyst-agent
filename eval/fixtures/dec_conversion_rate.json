@@ -1,0 +1,70 @@
+{
+  "id": "dec_conversion_rate",
+  "question": "What was the session conversion rate in December 2020?",
+  "answer": "The session conversion rate for December 2020 was 1.6% (2,116 purchasing sessions out of 133,368 total sessions).\n\nThis figure covers the period from 2020-12-01 to 2020-12-31.",
+  "tool_calls": [
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "end_date": "2020-12-31",
+        "start_date": "2020-12-01"
+      },
+      "response": {
+        "revenue": 160555.0,
+        "currency": "USD",
+        "orders": 2310,
+        "units": 10125,
+        "purchasers": 1975,
+        "sessions": 133368,
+        "purchasing_sessions": 2116,
+        "average_order_value": 69.5,
+        "conversion_rate": 0.0159,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 384884587,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 7.328,
+  "golden_responses": [
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31"
+      },
+      "response": {
+        "revenue": 160555.0,
+        "currency": "USD",
+        "orders": 2310,
+        "units": 10125,
+        "purchasers": 1975,
+        "sessions": 133368,
+        "purchasing_sessions": 2116,
+        "average_order_value": 69.5,
+        "conversion_rate": 0.0159,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 384884587,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

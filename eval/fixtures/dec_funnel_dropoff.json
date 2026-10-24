@@ -1,0 +1,104 @@
+{
+  "id": "dec_funnel_dropoff",
+  "question": "Where is the biggest drop-off in the purchase funnel in December 2020?",
+  "answer": "The biggest drop-off in the purchase funnel during December 2020 occurred between the `view_item` and `add_to_cart` steps, where the step rate was 30.2%.\n\nDate range: 2020-12-01 to 2020-12-31.\n\n| Step | Sessions | Step Rate | Cumulative Rate |\n| :--- | :--- | :--- | :--- |\n| view_item | 27,976 | 100.0% | 100.0% |\n| add_to_cart | 8,450 | 30.2% | 30.2% |\n| begin_checkout | 4,362 | 51.6% | 15.6% |\n| purchase | 2,116 | 48.5% | 7.6% |",
+  "tool_calls": [
+    {
+      "name": "get_funnel",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31"
+      },
+      "response": {
+        "steps": [
+          {
+            "event_name": "view_item",
+            "sessions": 27976,
+            "step_rate": 1.0,
+            "cumulative_rate": 1.0
+          },
+          {
+            "event_name": "add_to_cart",
+            "sessions": 8450,
+            "step_rate": 0.302,
+            "cumulative_rate": 0.302
+          },
+          {
+            "event_name": "begin_checkout",
+            "sessions": 4362,
+            "step_rate": 0.5162,
+            "cumulative_rate": 0.1559
+          },
+          {
+            "event_name": "purchase",
+            "sessions": 2116,
+            "step_rate": 0.4851,
+            "cumulative_rate": 0.0756
+          }
+        ],
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "685e4de48814da2e",
+          "bytes_processed": 381026366,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 6.504,
+  "golden_responses": [
+    {
+      "tool": "get_funnel",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31"
+      },
+      "response": {
+        "steps": [
+          {
+            "event_name": "view_item",
+            "sessions": 27976,
+            "step_rate": 1.0,
+            "cumulative_rate": 1.0
+          },
+          {
+            "event_name": "add_to_cart",
+            "sessions": 8450,
+            "step_rate": 0.302,
+            "cumulative_rate": 0.302
+          },
+          {
+            "event_name": "begin_checkout",
+            "sessions": 4362,
+            "step_rate": 0.5162,
+            "cumulative_rate": 0.1559
+          },
+          {
+            "event_name": "purchase",
+            "sessions": 2116,
+            "step_rate": 0.4851,
+            "cumulative_rate": 0.0756
+          }
+        ],
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "685e4de48814da2e",
+          "bytes_processed": 381026366,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

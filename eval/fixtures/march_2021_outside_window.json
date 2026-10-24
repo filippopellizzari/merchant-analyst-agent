@@ -1,0 +1,10 @@
+{
+  "id": "march_2021_outside_window",
+  "question": "How much revenue did we make in March 2021?",
+  "answer": "The available data for the Google Merchandise Store covers only the period from 2020-11-01 to 2021-01-31. Data for March 2021 is not available.",
+  "tool_calls": [],
+  "model": "gemini-3.1-flash-lite",
+  "events": 1,
+  "duration_s": 3.044,
+  "golden_responses": []
+}

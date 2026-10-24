@@ -1,0 +1,130 @@
+{
+  "id": "window_geo_top5",
+  "question": "Which 5 countries generated the most revenue between 2020-11-01 and 2021-01-31?",
+  "answer": "The 5 countries that generated the most revenue between 2020-11-01 and 2021-01-31 are:\n\n| Rank | Country | Revenue |\n| :--- | :--- | :--- |\n| 1 | United States | $160,573.00 |\n| 2 | India | $34,986.00 |\n| 3 | Canada | $32,799.00 |\n| 4 | United Kingdom | $11,458.00 |\n| 5 | Spain | $7,681.00 |",
+  "tool_calls": [
+    {
+      "name": "get_geo_breakdown",
+      "args": {
+        "end_date": "2021-01-31",
+        "limit": 5,
+        "start_date": "2020-11-01"
+      },
+      "response": {
+        "rows": [
+          {
+            "rank": 1,
+            "country": "United States",
+            "sessions": 158155,
+            "orders": 1939,
+            "revenue": 160573.0
+          },
+          {
+            "rank": 2,
+            "country": "India",
+            "sessions": 33769,
+            "orders": 405,
+            "revenue": 34986.0
+          },
+          {
+            "rank": 3,
+            "country": "Canada",
+            "sessions": 26824,
+            "orders": 362,
+            "revenue": 32799.0
+          },
+          {
+            "rank": 4,
+            "country": "United Kingdom",
+            "sessions": 11327,
+            "orders": 136,
+            "revenue": 11458.0
+          },
+          {
+            "rank": 5,
+            "country": "Spain",
+            "sessions": 6667,
+            "orders": 106,
+            "revenue": 7681.0
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2021-01-31"
+          },
+          "clamped": false,
+          "sql_hash": "0912a179a8b52f22",
+          "bytes_processed": 1053798444,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 38.689,
+  "golden_responses": [
+    {
+      "tool": "get_geo_breakdown",
+      "args": {
+        "start_date": "2020-11-01",
+        "end_date": "2021-01-31",
+        "limit": 5
+      },
+      "response": {
+        "rows": [
+          {
+            "rank": 1,
+            "country": "United States",
+            "sessions": 158155,
+            "orders": 1939,
+            "revenue": 160573.0
+          },
+          {
+            "rank": 2,
+            "country": "India",
+            "sessions": 33769,
+            "orders": 405,
+            "revenue": 34986.0
+          },
+          {
+            "rank": 3,
+            "country": "Canada",
+            "sessions": 26824,
+            "orders": 362,
+            "revenue": 32799.0
+          },
+          {
+            "rank": 4,
+            "country": "United Kingdom",
+            "sessions": 11327,
+            "orders": 136,
+            "revenue": 11458.0
+          },
+          {
+            "rank": 5,
+            "country": "Spain",
+            "sessions": 6667,
+            "orders": 106,
+            "revenue": 7681.0
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2021-01-31"
+          },
+          "clamped": false,
+          "sql_hash": "0912a179a8b52f22",
+          "bytes_processed": 1053798444,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

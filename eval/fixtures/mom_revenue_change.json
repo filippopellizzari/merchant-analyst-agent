@@ -1,0 +1,128 @@
+{
+  "id": "mom_revenue_change",
+  "question": "How did revenue in December 2020 compare to November 2020, in percent?",
+  "answer": "Revenue in December 2020 increased by 11.3% compared to November 2020 (from $144,260.00 to $160,555.00).\n\n*   **November 2020 (2020-11-01 to 2020-11-30):** $144,260.00\n*   **December 2020 (2020-12-01 to 2020-12-31):** $160,555.00",
+  "tool_calls": [
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-01",
+        "end_date": "2020-11-30"
+      },
+      "response": {
+        "revenue": 144260.0,
+        "currency": "USD",
+        "orders": 1258,
+        "units": 9130,
+        "purchasers": 1532,
+        "sessions": 108401,
+        "purchasing_sessions": 1617,
+        "average_order_value": 114.67,
+        "conversion_rate": 0.0149,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 349200967,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    },
+    {
+      "name": "get_sales_summary",
+      "args": {
+        "end_date": "2020-12-31",
+        "start_date": "2020-12-01"
+      },
+      "response": {
+        "revenue": 160555.0,
+        "currency": "USD",
+        "orders": 2310,
+        "units": 10125,
+        "purchasers": 1975,
+        "sessions": 133368,
+        "purchasing_sessions": 2116,
+        "average_order_value": 69.5,
+        "conversion_rate": 0.0159,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 384884587,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 10.79,
+  "golden_responses": [
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-11-01",
+        "end_date": "2020-11-30"
+      },
+      "response": {
+        "revenue": 144260.0,
+        "currency": "USD",
+        "orders": 1258,
+        "units": 9130,
+        "purchasers": 1532,
+        "sessions": 108401,
+        "purchasing_sessions": 1617,
+        "average_order_value": 114.67,
+        "conversion_rate": 0.0149,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-11-01",
+            "end_date": "2020-11-30"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 349200967,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    },
+    {
+      "tool": "get_sales_summary",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31"
+      },
+      "response": {
+        "revenue": 160555.0,
+        "currency": "USD",
+        "orders": 2310,
+        "units": 10125,
+        "purchasers": 1975,
+        "sessions": 133368,
+        "purchasing_sessions": 2116,
+        "average_order_value": 69.5,
+        "conversion_rate": 0.0159,
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "59bce6dfd2fd97ba",
+          "bytes_processed": 384884587,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

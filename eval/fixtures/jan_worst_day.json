@@ -1,0 +1,316 @@
+{
+  "id": "jan_worst_day",
+  "question": "What was the worst day for revenue in January 2021?",
+  "answer": "The worst day for revenue in January 2021 was January 31, 2021, with $0.00 in revenue.\n\nThe date range used was 2021-01-01 to 2021-01-31.",
+  "tool_calls": [
+    {
+      "name": "get_daily_trend",
+      "args": {
+        "end_date": "2021-01-31",
+        "start_date": "2021-01-01",
+        "metric": "REVENUE"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "points": [
+          {
+            "date": "2021-01-01",
+            "value": 975.0
+          },
+          {
+            "date": "2021-01-02",
+            "value": 1026.0
+          },
+          {
+            "date": "2021-01-03",
+            "value": 552.0
+          },
+          {
+            "date": "2021-01-04",
+            "value": 834.0
+          },
+          {
+            "date": "2021-01-05",
+            "value": 1143.0
+          },
+          {
+            "date": "2021-01-06",
+            "value": 2000.0
+          },
+          {
+            "date": "2021-01-07",
+            "value": 1452.0
+          },
+          {
+            "date": "2021-01-08",
+            "value": 1699.0
+          },
+          {
+            "date": "2021-01-09",
+            "value": 1363.0
+          },
+          {
+            "date": "2021-01-10",
+            "value": 974.0
+          },
+          {
+            "date": "2021-01-11",
+            "value": 1496.0
+          },
+          {
+            "date": "2021-01-12",
+            "value": 2547.0
+          },
+          {
+            "date": "2021-01-13",
+            "value": 1858.0
+          },
+          {
+            "date": "2021-01-14",
+            "value": 3274.0
+          },
+          {
+            "date": "2021-01-15",
+            "value": 2071.0
+          },
+          {
+            "date": "2021-01-16",
+            "value": 1461.0
+          },
+          {
+            "date": "2021-01-17",
+            "value": 481.0
+          },
+          {
+            "date": "2021-01-18",
+            "value": 1223.0
+          },
+          {
+            "date": "2021-01-19",
+            "value": 3756.0
+          },
+          {
+            "date": "2021-01-20",
+            "value": 6706.0
+          },
+          {
+            "date": "2021-01-21",
+            "value": 4206.0
+          },
+          {
+            "date": "2021-01-22",
+            "value": 5552.0
+          },
+          {
+            "date": "2021-01-23",
+            "value": 2747.0
+          },
+          {
+            "date": "2021-01-24",
+            "value": 2408.0
+          },
+          {
+            "date": "2021-01-25",
+            "value": 3353.0
+          },
+          {
+            "date": "2021-01-26",
+            "value": 1259.0
+          },
+          {
+            "date": "2021-01-27",
+            "value": 457.0
+          },
+          {
+            "date": "2021-01-28",
+            "value": 128.0
+          },
+          {
+            "date": "2021-01-29",
+            "value": 190.0
+          },
+          {
+            "date": "2021-01-30",
+            "value": 159.0
+          },
+          {
+            "date": "2021-01-31",
+            "value": 0.0
+          }
+        ],
+        "total": 57350.0,
+        "minimum": 0.0,
+        "maximum": 6706.0,
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2021-01-01",
+            "end_date": "2021-01-31"
+          },
+          "clamped": false,
+          "sql_hash": "9d952f43b7e18035",
+          "bytes_processed": 282197903,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 8.566,
+  "golden_responses": [
+    {
+      "tool": "get_daily_trend",
+      "args": {
+        "start_date": "2021-01-01",
+        "end_date": "2021-01-31",
+        "metric": "REVENUE"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "points": [
+          {
+            "date": "2021-01-01",
+            "value": 975.0
+          },
+          {
+            "date": "2021-01-02",
+            "value": 1026.0
+          },
+          {
+            "date": "2021-01-03",
+            "value": 552.0
+          },
+          {
+            "date": "2021-01-04",
+            "value": 834.0
+          },
+          {
+            "date": "2021-01-05",
+            "value": 1143.0
+          },
+          {
+            "date": "2021-01-06",
+            "value": 2000.0
+          },
+          {
+            "date": "2021-01-07",
+            "value": 1452.0
+          },
+          {
+            "date": "2021-01-08",
+            "value": 1699.0
+          },
+          {
+            "date": "2021-01-09",
+            "value": 1363.0
+          },
+          {
+            "date": "2021-01-10",
+            "value": 974.0
+          },
+          {
+            "date": "2021-01-11",
+            "value": 1496.0
+          },
+          {
+            "date": "2021-01-12",
+            "value": 2547.0
+          },
+          {
+            "date": "2021-01-13",
+            "value": 1858.0
+          },
+          {
+            "date": "2021-01-14",
+            "value": 3274.0
+          },
+          {
+            "date": "2021-01-15",
+            "value": 2071.0
+          },
+          {
+            "date": "2021-01-16",
+            "value": 1461.0
+          },
+          {
+            "date": "2021-01-17",
+            "value": 481.0
+          },
+          {
+            "date": "2021-01-18",
+            "value": 1223.0
+          },
+          {
+            "date": "2021-01-19",
+            "value": 3756.0
+          },
+          {
+            "date": "2021-01-20",
+            "value": 6706.0
+          },
+          {
+            "date": "2021-01-21",
+            "value": 4206.0
+          },
+          {
+            "date": "2021-01-22",
+            "value": 5552.0
+          },
+          {
+            "date": "2021-01-23",
+            "value": 2747.0
+          },
+          {
+            "date": "2021-01-24",
+            "value": 2408.0
+          },
+          {
+            "date": "2021-01-25",
+            "value": 3353.0
+          },
+          {
+            "date": "2021-01-26",
+            "value": 1259.0
+          },
+          {
+            "date": "2021-01-27",
+            "value": 457.0
+          },
+          {
+            "date": "2021-01-28",
+            "value": 128.0
+          },
+          {
+            "date": "2021-01-29",
+            "value": 190.0
+          },
+          {
+            "date": "2021-01-30",
+            "value": 159.0
+          },
+          {
+            "date": "2021-01-31",
+            "value": 0.0
+          }
+        ],
+        "total": 57350.0,
+        "minimum": 0.0,
+        "maximum": 6706.0,
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2021-01-01",
+            "end_date": "2021-01-31"
+          },
+          "clamped": false,
+          "sql_hash": "9d952f43b7e18035",
+          "bytes_processed": 282197903,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

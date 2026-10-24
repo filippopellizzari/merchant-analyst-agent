@@ -1,0 +1,124 @@
+{
+  "id": "pre_christmas_trend",
+  "question": "How did daily revenue evolve in the week before Christmas 2020 (December 18 to 24)?",
+  "answer": "Daily revenue between December 18 and December 24, 2020, totaled $23,074.00.\n\n| Date | Revenue |\n| :--- | :--- |\n| 2020-12-18 | $6,624.00 |\n| 2020-12-19 | $2,782.00 |\n| 2020-12-20 | $1,399.00 |\n| 2020-12-21 | $3,429.00 |\n| 2020-12-22 | $3,230.00 |\n| 2020-12-23 | $4,418.00 |\n| 2020-12-24 | $1,192.00 |",
+  "tool_calls": [
+    {
+      "name": "get_daily_trend",
+      "args": {
+        "start_date": "2020-12-18",
+        "metric": "REVENUE",
+        "end_date": "2020-12-24"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "points": [
+          {
+            "date": "2020-12-18",
+            "value": 6624.0
+          },
+          {
+            "date": "2020-12-19",
+            "value": 2782.0
+          },
+          {
+            "date": "2020-12-20",
+            "value": 1399.0
+          },
+          {
+            "date": "2020-12-21",
+            "value": 3429.0
+          },
+          {
+            "date": "2020-12-22",
+            "value": 3230.0
+          },
+          {
+            "date": "2020-12-23",
+            "value": 4418.0
+          },
+          {
+            "date": "2020-12-24",
+            "value": 1192.0
+          }
+        ],
+        "total": 23074.0,
+        "minimum": 1192.0,
+        "maximum": 6624.0,
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-18",
+            "end_date": "2020-12-24"
+          },
+          "clamped": false,
+          "sql_hash": "9d952f43b7e18035",
+          "bytes_processed": 69878154,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 53.075,
+  "golden_responses": [
+    {
+      "tool": "get_daily_trend",
+      "args": {
+        "start_date": "2020-12-18",
+        "end_date": "2020-12-24",
+        "metric": "REVENUE"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "points": [
+          {
+            "date": "2020-12-18",
+            "value": 6624.0
+          },
+          {
+            "date": "2020-12-19",
+            "value": 2782.0
+          },
+          {
+            "date": "2020-12-20",
+            "value": 1399.0
+          },
+          {
+            "date": "2020-12-21",
+            "value": 3429.0
+          },
+          {
+            "date": "2020-12-22",
+            "value": 3230.0
+          },
+          {
+            "date": "2020-12-23",
+            "value": 4418.0
+          },
+          {
+            "date": "2020-12-24",
+            "value": 1192.0
+          }
+        ],
+        "total": 23074.0,
+        "minimum": 1192.0,
+        "maximum": 6624.0,
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-18",
+            "end_date": "2020-12-24"
+          },
+          "clamped": false,
+          "sql_hash": "9d952f43b7e18035",
+          "bytes_processed": 69878154,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

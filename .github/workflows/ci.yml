@@ -35,3 +35,5 @@ jobs:
       - run: uv python install 3.12
       - run: uv sync --all-groups
       - run: uv run pytest -q
+      - name: Replay recorded eval fixtures (no model or BigQuery calls)
+        run: uv run python -m merchant_eval.run --replay --no-report

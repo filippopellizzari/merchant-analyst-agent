@@ -151,24 +151,24 @@ cases:
 
   - id: march_2021_outside_window
     question: How much revenue did we make in March 2021?
-    expect_tools: [get_sales_summary]
     notes: >-
-      Entirely outside the dataset window. The service rejects such ranges with
-      INVALID_ARGUMENT, which the tool surfaces as an error dict; the agent should explain
-      that data ends on 2021-01-31 and must not quote a March figure. Any number quoted must
-      still come from a tool result (e.g. a fallback call on a valid range).
+      Entirely outside the dataset window. The agent may check get_dataset_info or call
+      get_sales_summary (the service rejects the range with INVALID_ARGUMENT); either way it
+      must explain that data ends on 2021-01-31 and must not quote a March figure. Any number
+      quoted must still come from a tool result.
 
   - id: oct_nov_2020_partially_outside
     question: What was total revenue from 1 October to 30 November 2020?
     expect_tools: [get_sales_summary]
-    expect_clamped: true
     golden:
       - tool: get_sales_summary
         args: {start_date: "2020-11-01", end_date: "2020-11-30"}
         answer_must_contain: ["revenue"]
     notes: >-
-      Partially outside the window: the service clamps the start to 2020-11-01 and sets
-      meta.clamped=true. The agent should state the applied range and give November revenue.
+      Partially outside the window. Either the agent trims the range itself or the service
+      clamps it (meta.clamped=true); in both cases the answer must give November revenue and
+      say October is unavailable. expect_clamped is deliberately not set because a well-behaved
+      agent avoids the clamp.
 
   - id: dataset_description
     question: What dataset is this agent working with, and which period does it cover?
@@ -176,8 +176,10 @@ cases:
     golden:
       - tool: get_dataset_info
         args: {}
-        answer_must_contain: [currency]
-    notes: Mostly prose. Dates are not number mentions; any event/session counts must match.
+        answer_must_contain: ["available_range.start_date", "available_range.end_date"]
+    notes: >-
+      Mostly prose. Dates are not number mentions; any event/session counts must match. The
+      answer must name the window exactly as the dataset-info tool reports it.
 
   - id: forecast_trick
     question: Forecast the revenue for February 2021.

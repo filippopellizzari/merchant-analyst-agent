@@ -1,0 +1,112 @@
+{
+  "id": "dec_top3_units",
+  "question": "Which 3 products sold the most units in December 2020?",
+  "answer": "The top 3 products sold by units in December 2020 (2020-12-01 to 2020-12-31) were:\n\n1. **Google Laptop and Cell Phone Stickers** – 255 units\n2. **Google Canteen Bottle Black** – 180 units\n3. **Google Metallic Notebook Set** – 172 units\n\n### Top 3 Products by Units Sold (2020-12-01 to 2020-12-31)\n\n| Rank | Product Name | Category | Units | Orders | Revenue |\n| --- | --- | --- | ---: | ---: | ---: |\n| 1 | Google Laptop and Cell Phone Stickers | Google | 255 | 59 | $709.00 |\n| 2 | Google Canteen Bottle Black | Drinkware | 180 | 77 | $3,550.00 |\n| 3 | Google Metallic Notebook Set | Office | 172 | 62 | $851.00 |",
+  "tool_calls": [
+    {
+      "name": "get_top_products",
+      "args": {
+        "metric": "UNITS",
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31",
+        "limit": 3
+      },
+      "response": {
+        "metric": "UNITS",
+        "rows": [
+          {
+            "rank": 1,
+            "item_name": "Google Laptop and Cell Phone Stickers",
+            "item_category": "Google",
+            "revenue": 709.0,
+            "units": 255,
+            "orders": 59
+          },
+          {
+            "rank": 2,
+            "item_name": "Google Canteen Bottle Black",
+            "item_category": "Drinkware",
+            "revenue": 3550.0,
+            "units": 180,
+            "orders": 77
+          },
+          {
+            "rank": 3,
+            "item_name": "Google Metallic Notebook Set",
+            "item_category": "Office",
+            "revenue": 851.0,
+            "units": 172,
+            "orders": 62
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "0a6a30d2abf31761",
+          "bytes_processed": 116091533,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.5-flash",
+  "events": 3,
+  "duration_s": 9.703,
+  "golden_responses": [
+    {
+      "tool": "get_top_products",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31",
+        "metric": "UNITS",
+        "limit": 3
+      },
+      "response": {
+        "metric": "UNITS",
+        "rows": [
+          {
+            "rank": 1,
+            "item_name": "Google Laptop and Cell Phone Stickers",
+            "item_category": "Google",
+            "revenue": 709.0,
+            "units": 255,
+            "orders": 59
+          },
+          {
+            "rank": 2,
+            "item_name": "Google Canteen Bottle Black",
+            "item_category": "Drinkware",
+            "revenue": 3550.0,
+            "units": 180,
+            "orders": 77
+          },
+          {
+            "rank": 3,
+            "item_name": "Google Metallic Notebook Set",
+            "item_category": "Office",
+            "revenue": 851.0,
+            "units": 172,
+            "orders": 62
+          }
+        ],
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "0a6a30d2abf31761",
+          "bytes_processed": 116091533,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "id": "dec_best_day",
+  "question": "Which day in December 2020 had the highest revenue, and how much was it?",
+  "answer": "The day with the highest revenue in December 2020 was December 16, 2020, with a total revenue of $11,509.00.\n\nDate range: 2020-12-01 to 2020-12-31.",
+  "tool_calls": [
+    {
+      "name": "get_daily_trend",
+      "args": {
+        "start_date": "2020-12-01",
+        "metric": "REVENUE",
+        "end_date": "2020-12-31"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "points": [
+          {
+            "date": "2020-12-01",
+            "value": 6258.0
+          },
+          {
+            "date": "2020-12-02",
+            "value": 5201.0
+          },
+          {
+            "date": "2020-12-03",
+            "value": 4317.0
+          },
+          {
+            "date": "2020-12-04",
+            "value": 6458.0
+          },
+          {
+            "date": "2020-12-05",
+            "value": 6396.0
+          },
+          {
+            "date": "2020-12-06",
+            "value": 2328.0
+          },
+          {
+            "date": "2020-12-07",
+            "value": 8472.0
+          },
+          {
+            "date": "2020-12-08",
+            "value": 8695.0
+          },
+          {
+            "date": "2020-12-09",
+            "value": 10863.0
+          },
+          {
+            "date": "2020-12-10",
+            "value": 10756.0
+          },
+          {
+            "date": "2020-12-11",
+            "value": 10400.0
+          },
+          {
+            "date": "2020-12-12",
+            "value": 6284.0
+          },
+          {
+            "date": "2020-12-13",
+            "value": 4395.0
+          },
+          {
+            "date": "2020-12-14",
+            "value": 8505.0
+          },
+          {
+            "date": "2020-12-15",
+            "value": 9738.0
+          },
+          {
+            "date": "2020-12-16",
+            "value": 11509.0
+          },
+          {
+            "date": "2020-12-17",
+            "value": 6745.0
+          },
+          {
+            "date": "2020-12-18",
+            "value": 6624.0
+          },
+          {
+            "date": "2020-12-19",
+            "value": 2782.0
+          },
+          {
+            "date": "2020-12-20",
+            "value": 1399.0
+          },
+          {
+            "date": "2020-12-21",
+            "value": 3429.0
+          },
+          {
+            "date": "2020-12-22",
+            "value": 3230.0
+          },
+          {
+            "date": "2020-12-23",
+            "value": 4418.0
+          },
+          {
+            "date": "2020-12-24",
+            "value": 1192.0
+          },
+          {
+            "date": "2020-12-25",
+            "value": 552.0
+          },
+          {
+            "date": "2020-12-26",
+            "value": 734.0
+          },
+          {
+            "date": "2020-12-27",
+            "value": 1161.0
+          },
+          {
+            "date": "2020-12-28",
+            "value": 2097.0
+          },
+          {
+            "date": "2020-12-29",
+            "value": 1418.0
+          },
+          {
+            "date": "2020-12-30",
+            "value": 1604.0
+          },
+          {
+            "date": "2020-12-31",
+            "value": 2595.0
+          }
+        ],
+        "total": 160555.0,
+        "minimum": 552.0,
+        "maximum": 11509.0,
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "9d952f43b7e18035",
+          "bytes_processed": 401011837,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "events": 3,
+  "duration_s": 6.151,
+  "golden_responses": [
+    {
+      "tool": "get_daily_trend",
+      "args": {
+        "start_date": "2020-12-01",
+        "end_date": "2020-12-31",
+        "metric": "REVENUE"
+      },
+      "response": {
+        "metric": "REVENUE",
+        "points": [
+          {
+            "date": "2020-12-01",
+            "value": 6258.0
+          },
+          {
+            "date": "2020-12-02",
+            "value": 5201.0
+          },
+          {
+            "date": "2020-12-03",
+            "value": 4317.0
+          },
+          {
+            "date": "2020-12-04",
+            "value": 6458.0
+          },
+          {
+            "date": "2020-12-05",
+            "value": 6396.0
+          },
+          {
+            "date": "2020-12-06",
+            "value": 2328.0
+          },
+          {
+            "date": "2020-12-07",
+            "value": 8472.0
+          },
+          {
+            "date": "2020-12-08",
+            "value": 8695.0
+          },
+          {
+            "date": "2020-12-09",
+            "value": 10863.0
+          },
+          {
+            "date": "2020-12-10",
+            "value": 10756.0
+          },
+          {
+            "date": "2020-12-11",
+            "value": 10400.0
+          },
+          {
+            "date": "2020-12-12",
+            "value": 6284.0
+          },
+          {
+            "date": "2020-12-13",
+            "value": 4395.0
+          },
+          {
+            "date": "2020-12-14",
+            "value": 8505.0
+          },
+          {
+            "date": "2020-12-15",
+            "value": 9738.0
+          },
+          {
+            "date": "2020-12-16",
+            "value": 11509.0
+          },
+          {
+            "date": "2020-12-17",
+            "value": 6745.0
+          },
+          {
+            "date": "2020-12-18",
+            "value": 6624.0
+          },
+          {
+            "date": "2020-12-19",
+            "value": 2782.0
+          },
+          {
+            "date": "2020-12-20",
+            "value": 1399.0
+          },
+          {
+            "date": "2020-12-21",
+            "value": 3429.0
+          },
+          {
+            "date": "2020-12-22",
+            "value": 3230.0
+          },
+          {
+            "date": "2020-12-23",
+            "value": 4418.0
+          },
+          {
+            "date": "2020-12-24",
+            "value": 1192.0
+          },
+          {
+            "date": "2020-12-25",
+            "value": 552.0
+          },
+          {
+            "date": "2020-12-26",
+            "value": 734.0
+          },
+          {
+            "date": "2020-12-27",
+            "value": 1161.0
+          },
+          {
+            "date": "2020-12-28",
+            "value": 2097.0
+          },
+          {
+            "date": "2020-12-29",
+            "value": 1418.0
+          },
+          {
+            "date": "2020-12-30",
+            "value": 1604.0
+          },
+          {
+            "date": "2020-12-31",
+            "value": 2595.0
+          }
+        ],
+        "total": 160555.0,
+        "minimum": 552.0,
+        "maximum": 11509.0,
+        "currency": "USD",
+        "meta": {
+          "date_range_applied": {
+            "start_date": "2020-12-01",
+            "end_date": "2020-12-31"
+          },
+          "clamped": false,
+          "sql_hash": "9d952f43b7e18035",
+          "bytes_processed": 401011837,
+          "cache_hit": false,
+          "table": "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*"
+        }
+      }
+    }
+  ]
+}
