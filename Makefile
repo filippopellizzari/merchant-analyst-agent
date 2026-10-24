@@ -2,6 +2,12 @@ SHELL := /bin/bash
 JAVA_HOME ?= $(shell brew --prefix openjdk@21 2>/dev/null)/libexec/openjdk.jdk/Contents/Home
 export JAVA_HOME
 
+# Load .env (if present) so GCP_PROJECT etc. reach the Java service and the agent.
+ifneq (,$(wildcard .env))
+include .env
+export $(shell sed -n 's/^\([A-Za-z_][A-Za-z0-9_]*\)=.*/\1/p' .env)
+endif
+
 .PHONY: help proto service-build service-test service-run agent-sync agent-test agent-cli agent-web eval eval-test test
 
 help: ## Show targets
