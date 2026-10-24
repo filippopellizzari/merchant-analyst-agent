@@ -1,0 +1,187 @@
+# Eval cases for the merchant analyst agent.
+#
+# Data window of the GA4 Merchandise Store sample: 2020-11-01 .. 2021-01-31.
+#
+# Per case:
+#   id              unique, used for fixtures (eval/fixtures/<id>.json) and --only
+#   question        what is sent to the agent
+#   expect_tools    tool names the agent must have called (subset check)
+#   forbid_tools    optional, tool names the agent must NOT have called
+#   expect_clamped  optional, true -> at least one tool response has meta.clamped == true
+#   golden          optional list of {tool, args, answer_must_contain: [paths]}
+#                   the harness calls `tool(**args)` itself and checks the answer
+#                   contains each resolved value (numbers via the grounding matcher,
+#                   strings case-insensitively)
+#   notes           free text, copied into the report
+#
+# Every case is additionally subject to the grounding check: each number in the
+# answer must be traceable to a tool result.
+
+cases:
+  - id: dec_totals
+    question: What were the total revenue and the number of orders in December 2020?
+    expect_tools: [get_sales_summary]
+    golden:
+      - tool: get_sales_summary
+        args: {start_date: "2020-12-01", end_date: "2020-12-31"}
+        answer_must_contain: [revenue, orders]
+    notes: Headline totals for one month.
+
+  - id: dec_aov
+    question: What was the average order value in December 2020?
+    expect_tools: [get_sales_summary]
+    golden:
+      - tool: get_sales_summary
+        args: {start_date: "2020-12-01", end_date: "2020-12-31"}
+        answer_must_contain: [average_order_value]
+    notes: AOV is a response field, but revenue/orders would also ground it as a derivation.
+
+  - id: nov_top5_revenue
+    question: What were the top 5 products by revenue in November 2020?
+    expect_tools: [get_top_products]
+    golden:
+      - tool: get_top_products
+        args: {start_date: "2020-11-01", end_date: "2020-11-30", metric: REVENUE, limit: 5}
+        answer_must_contain: ["rows[0].item_name", "rows[0].revenue", "rows[4].item_name"]
+    notes: Ranking by the default metric with an explicit limit.
+
+  - id: dec_top3_units
+    question: Which 3 products sold the most units in December 2020?
+    expect_tools: [get_top_products]
+    golden:
+      - tool: get_top_products
+        args: {start_date: "2020-12-01", end_date: "2020-12-31", metric: UNITS, limit: 3}
+        answer_must_contain: ["rows[0].item_name", "rows[0].units"]
+    notes: Ranking by a non-default metric; the agent must pass metric=UNITS.
+
+  - id: jan_top_products_default_limit
+    question: List the top products in January 2021.
+    expect_tools: [get_top_products]
+    golden:
+      - tool: get_top_products
+        args: {start_date: "2021-01-01", end_date: "2021-01-31", metric: REVENUE, limit: 10}
+        answer_must_contain: ["rows[0].item_name", "rows[0].revenue"]
+    notes: No N given; default limit is 10.
+
+  - id: dec_best_day
+    question: Which day in December 2020 had the highest revenue, and how much was it?
+    expect_tools: [get_daily_trend]
+    golden:
+      - tool: get_daily_trend
+        args: {start_date: "2020-12-01", end_date: "2020-12-31", metric: REVENUE}
+        answer_must_contain: [maximum]
+    notes: The date itself is not a number mention; the amount must equal `maximum`.
+
+  - id: jan_worst_day
+    question: What was the worst day for revenue in January 2021?
+    expect_tools: [get_daily_trend]
+    golden:
+      - tool: get_daily_trend
+        args: {start_date: "2021-01-01", end_date: "2021-01-31", metric: REVENUE}
+        answer_must_contain: [minimum]
+
+  - id: pre_christmas_trend
+    question: How did daily revenue evolve in the week before Christmas 2020 (December 18 to 24)?
+    expect_tools: [get_daily_trend]
+    golden:
+      - tool: get_daily_trend
+        args: {start_date: "2020-12-18", end_date: "2020-12-24", metric: REVENUE}
+        answer_must_contain: [maximum]
+    notes: Narrative over a short range; every quoted daily value must be a trend point.
+
+  - id: mom_revenue_change
+    question: How did revenue in December 2020 compare to November 2020, in percent?
+    expect_tools: [get_sales_summary]
+    golden:
+      - tool: get_sales_summary
+        args: {start_date: "2020-11-01", end_date: "2020-11-30"}
+        answer_must_contain: [revenue]
+      - tool: get_sales_summary
+        args: {start_date: "2020-12-01", end_date: "2020-12-31"}
+        answer_must_contain: [revenue]
+    notes: Needs two summary calls; the percentage is grounded as a derivation (b−a)/a.
+
+  - id: wow_orders
+    question: >-
+      Compare the number of orders in the week of 2020-11-23 to 2020-11-29 with the
+      previous week (2020-11-16 to 2020-11-22). What is the absolute and relative change?
+    expect_tools: [get_sales_summary]
+    golden:
+      - tool: get_sales_summary
+        args: {start_date: "2020-11-16", end_date: "2020-11-22"}
+        answer_must_contain: [orders]
+      - tool: get_sales_summary
+        args: {start_date: "2020-11-23", end_date: "2020-11-29"}
+        answer_must_contain: [orders]
+    notes: Black Friday week. Absolute change = a−b, relative = (b−a)/a derivations.
+
+  - id: dec_conversion_rate
+    question: What was the session conversion rate in December 2020?
+    expect_tools: [get_sales_summary]
+    golden:
+      - tool: get_sales_summary
+        args: {start_date: "2020-12-01", end_date: "2020-12-31"}
+        answer_must_contain: [conversion_rate, sessions]
+    notes: Rate is a fraction in the tool result; "5.3%" style formatting is accepted.
+
+  - id: dec_funnel_dropoff
+    question: Where is the biggest drop-off in the purchase funnel in December 2020?
+    expect_tools: [get_funnel]
+    golden:
+      - tool: get_funnel
+        args: {start_date: "2020-12-01", end_date: "2020-12-31"}
+        answer_must_contain: ["steps[0].sessions", "steps[3].sessions"]
+    notes: Step rates and cumulative rates are fractions; drop-offs may be quoted as 1−rate.
+
+  - id: nov_traffic_sources
+    question: Which 5 traffic sources brought the most sessions in November 2020?
+    expect_tools: [get_traffic_by_source]
+    golden:
+      - tool: get_traffic_by_source
+        args: {start_date: "2020-11-01", end_date: "2020-11-30", limit: 5}
+        answer_must_contain: ["rows[0].source", "rows[0].sessions"]
+
+  - id: window_geo_top5
+    question: Which 5 countries generated the most revenue between 2020-11-01 and 2021-01-31?
+    expect_tools: [get_geo_breakdown]
+    golden:
+      - tool: get_geo_breakdown
+        args: {start_date: "2020-11-01", end_date: "2021-01-31", limit: 5}
+        answer_must_contain: ["rows[0].country", "rows[0].revenue"]
+
+  - id: march_2021_outside_window
+    question: How much revenue did we make in March 2021?
+    expect_tools: [get_sales_summary]
+    notes: >-
+      Entirely outside the dataset window. The service rejects such ranges with
+      INVALID_ARGUMENT, which the tool surfaces as an error dict; the agent should explain
+      that data ends on 2021-01-31 and must not quote a March figure. Any number quoted must
+      still come from a tool result (e.g. a fallback call on a valid range).
+
+  - id: oct_nov_2020_partially_outside
+    question: What was total revenue from 1 October to 30 November 2020?
+    expect_tools: [get_sales_summary]
+    expect_clamped: true
+    golden:
+      - tool: get_sales_summary
+        args: {start_date: "2020-11-01", end_date: "2020-11-30"}
+        answer_must_contain: ["revenue"]
+    notes: >-
+      Partially outside the window: the service clamps the start to 2020-11-01 and sets
+      meta.clamped=true. The agent should state the applied range and give November revenue.
+
+  - id: dataset_description
+    question: What dataset is this agent working with, and which period does it cover?
+    expect_tools: [get_dataset_info]
+    golden:
+      - tool: get_dataset_info
+        args: {}
+        answer_must_contain: [currency]
+    notes: Mostly prose. Dates are not number mentions; any event/session counts must match.
+
+  - id: forecast_trick
+    question: Forecast the revenue for February 2021.
+    expect_tools: []
+    notes: >-
+      Trick question: there is no data after 2021-01-31. The agent should decline to forecast
+      (or clearly say it cannot). Any projected figure is ungrounded and fails the case.

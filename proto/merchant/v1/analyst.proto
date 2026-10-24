@@ -1,0 +1,239 @@
+syntax = "proto3";
+
+package merchant.v1;
+
+option java_multiple_files = true;
+option java_package = "ai.flowit.merchant.v1";
+option java_outer_classname = "AnalystProto";
+
+// MerchantAnalyst exposes a fixed menu of analytical queries over the public
+// Google Merchandise Store GA4 sample
+// (bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*).
+//
+// Every RPC runs a hand-written, parameterised SQL statement. There is no
+// free-form SQL on purpose: numbers must be deterministic and auditable.
+service MerchantAnalyst {
+  // Describes the dataset: available date window, currency, caveats.
+  rpc GetDatasetInfo(GetDatasetInfoRequest) returns (DatasetInfo);
+
+  // Headline commerce KPIs for a date range.
+  rpc GetSalesSummary(GetSalesSummaryRequest) returns (SalesSummary);
+
+  // Best-selling items ranked by a metric.
+  rpc GetTopProducts(GetTopProductsRequest) returns (TopProducts);
+
+  // One value per day for a metric.
+  rpc GetDailyTrend(GetDailyTrendRequest) returns (DailyTrend);
+
+  // Sessions, purchasers and revenue per traffic source / medium.
+  rpc GetTrafficBySource(GetTrafficBySourceRequest) returns (TrafficBySource);
+
+  // Purchase funnel: view_item -> add_to_cart -> begin_checkout -> purchase.
+  rpc GetFunnel(GetFunnelRequest) returns (Funnel);
+
+  // Sessions, revenue and orders per country.
+  rpc GetGeoBreakdown(GetGeoBreakdownRequest) returns (GeoBreakdown);
+}
+
+// ---------------------------------------------------------------------------
+// Shared types
+// ---------------------------------------------------------------------------
+
+// Inclusive date range, ISO-8601 calendar dates (YYYY-MM-DD).
+// If omitted or partially omitted, the server fills in the dataset bounds.
+// Ranges outside the dataset window are clamped; see QueryMeta.
+message DateRange {
+  string start_date = 1;
+  string end_date = 2;
+}
+
+// Provenance attached to every data response.
+message QueryMeta {
+  // Date range actually applied after clamping to the dataset window.
+  DateRange date_range_applied = 1;
+  // True when the requested range had to be clamped.
+  bool clamped = 2;
+  // SHA-256 (hex, first 16 chars) of the SQL text that produced the result.
+  string sql_hash = 3;
+  // Bytes processed as reported by BigQuery (0 on cache hit).
+  int64 bytes_processed = 4;
+  // Whether BigQuery served the result from cache.
+  bool cache_hit = 5;
+  // Fully qualified table pattern queried.
+  string table = 6;
+}
+
+enum Metric {
+  METRIC_UNSPECIFIED = 0;
+  REVENUE = 1;        // sum of ecommerce.purchase_revenue (USD)
+  ORDERS = 2;         // count of purchase events (distinct transaction_id)
+  UNITS = 3;          // sum of items.quantity on purchase events
+  SESSIONS = 4;       // distinct (user_pseudo_id, ga_session_id)
+  PURCHASERS = 5;     // distinct user_pseudo_id with a purchase
+  CONVERSION_RATE = 6; // purchasing sessions / sessions
+}
+
+// ---------------------------------------------------------------------------
+// GetDatasetInfo
+// ---------------------------------------------------------------------------
+
+message GetDatasetInfoRequest {}
+
+message DatasetInfo {
+  string table = 1;
+  DateRange available_range = 2;
+  string currency = 3;         // "USD"
+  int64 total_events = 4;
+  int64 total_sessions = 5;
+  int64 total_purchases = 6;
+  repeated string caveats = 7; // e.g. obfuscation notes
+  QueryMeta meta = 8;
+}
+
+// ---------------------------------------------------------------------------
+// GetSalesSummary
+// ---------------------------------------------------------------------------
+
+message GetSalesSummaryRequest {
+  DateRange date_range = 1;
+}
+
+message SalesSummary {
+  double revenue = 1;              // USD
+  string currency = 2;             // "USD"
+  int64 orders = 3;                // distinct transaction_id on purchase events
+  int64 units = 4;                 // sum of item quantities on purchase events
+  int64 purchasers = 5;            // distinct users with >= 1 purchase
+  int64 sessions = 6;              // distinct sessions in range
+  int64 purchasing_sessions = 7;   // distinct sessions with >= 1 purchase
+  double average_order_value = 8;  // revenue / orders (0 if no orders)
+  double conversion_rate = 9;      // purchasing_sessions / sessions, in [0,1]
+  QueryMeta meta = 10;
+}
+
+// ---------------------------------------------------------------------------
+// GetTopProducts
+// ---------------------------------------------------------------------------
+
+message GetTopProductsRequest {
+  DateRange date_range = 1;
+  // Ranking metric. Allowed: REVENUE (default), UNITS, ORDERS.
+  Metric metric = 2;
+  // 1..50, default 10.
+  int32 limit = 3;
+}
+
+message ProductRow {
+  int32 rank = 1;
+  string item_name = 2;
+  string item_category = 3;
+  double revenue = 4;   // USD, sum of items.item_revenue on purchase events
+  int64 units = 5;      // sum of items.quantity
+  int64 orders = 6;     // distinct transaction_id containing the item
+}
+
+message TopProducts {
+  Metric metric = 1;
+  repeated ProductRow rows = 2;
+  string currency = 3;
+  QueryMeta meta = 4;
+}
+
+// ---------------------------------------------------------------------------
+// GetDailyTrend
+// ---------------------------------------------------------------------------
+
+message GetDailyTrendRequest {
+  DateRange date_range = 1;
+  // Allowed: REVENUE (default), ORDERS, UNITS, SESSIONS, PURCHASERS,
+  // CONVERSION_RATE.
+  Metric metric = 2;
+}
+
+message DailyPoint {
+  string date = 1;   // YYYY-MM-DD
+  double value = 2;
+}
+
+message DailyTrend {
+  Metric metric = 1;
+  repeated DailyPoint points = 2;
+  double total = 3;    // sum over points (mean for CONVERSION_RATE)
+  double minimum = 4;
+  double maximum = 5;
+  string currency = 6; // "USD" when metric is REVENUE, else empty
+  QueryMeta meta = 7;
+}
+
+// ---------------------------------------------------------------------------
+// GetTrafficBySource
+// ---------------------------------------------------------------------------
+
+message GetTrafficBySourceRequest {
+  DateRange date_range = 1;
+  // 1..50, default 10. Rows are ordered by sessions desc.
+  int32 limit = 2;
+}
+
+message SourceRow {
+  int32 rank = 1;
+  string source = 2;             // traffic_source.source
+  string medium = 3;             // traffic_source.medium
+  int64 sessions = 4;
+  int64 purchasers = 5;
+  int64 orders = 6;
+  double revenue = 7;            // USD
+  double conversion_rate = 8;    // purchasing sessions / sessions
+}
+
+message TrafficBySource {
+  repeated SourceRow rows = 1;
+  string currency = 2;
+  QueryMeta meta = 3;
+}
+
+// ---------------------------------------------------------------------------
+// GetFunnel
+// ---------------------------------------------------------------------------
+
+message GetFunnelRequest {
+  DateRange date_range = 1;
+}
+
+message FunnelStep {
+  string event_name = 1;     // view_item, add_to_cart, begin_checkout, purchase
+  int64 sessions = 2;        // distinct sessions with this event
+  // sessions / previous step sessions (1.0 for the first step)
+  double step_rate = 3;
+  // sessions / first step sessions
+  double cumulative_rate = 4;
+}
+
+message Funnel {
+  repeated FunnelStep steps = 1;
+  QueryMeta meta = 2;
+}
+
+// ---------------------------------------------------------------------------
+// GetGeoBreakdown
+// ---------------------------------------------------------------------------
+
+message GetGeoBreakdownRequest {
+  DateRange date_range = 1;
+  // 1..50, default 10. Rows are ordered by revenue desc.
+  int32 limit = 2;
+}
+
+message GeoRow {
+  int32 rank = 1;
+  string country = 2;      // geo.country
+  int64 sessions = 3;
+  int64 orders = 4;
+  double revenue = 5;      // USD
+}
+
+message GeoBreakdown {
+  repeated GeoRow rows = 1;
+  string currency = 2;
+  QueryMeta meta = 3;
+}

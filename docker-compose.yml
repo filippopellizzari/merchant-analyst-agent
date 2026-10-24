@@ -1,0 +1,22 @@
+# Runs the Java tool service in a container. The agent itself runs on the host
+# (uv) so the ADK dev UI and CLI stay interactive.
+#
+#   cp .env.example .env && edit GCP_PROJECT
+#   gcloud auth application-default login
+#   docker compose up --build
+services:
+  tool-service:
+    build:
+      context: .
+      dockerfile: tool-service/Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      GCP_PROJECT: ${GCP_PROJECT}
+      TOOL_SERVICE_PORT: "50051"
+      BQ_MAX_BYTES_BILLED: ${BQ_MAX_BYTES_BILLED:-2000000000}
+      BQ_USE_CACHE: ${BQ_USE_CACHE:-true}
+      GOOGLE_APPLICATION_CREDENTIALS: /adc/application_default_credentials.json
+    volumes:
+      # Reuse the host's Application Default Credentials (read-only).
+      - ${HOME}/.config/gcloud/application_default_credentials.json:/adc/application_default_credentials.json:ro

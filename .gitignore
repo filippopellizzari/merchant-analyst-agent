@@ -1,0 +1,32 @@
+# Java
+tool-service/target/
+*.class
+*.jar
+!tool-service/.mvn/wrapper/maven-wrapper.jar
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.json.key
+service-account*.json
+
+# Eval artifacts
+eval/reports/*.json
+eval/reports/*.md
+!eval/reports/.gitkeep
+!eval/reports/sample-report.md
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.iml
