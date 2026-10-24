@@ -19,6 +19,14 @@ range (`expect_clamped`).
 
 Code lives in `agent/merchant_eval/`; offline unit tests in `agent/tests/eval/`.
 
+## Rate limits and retries
+
+The Gemini free tier allows 5 `generateContent` requests per minute per model,
+and a case needs at least two (tool call, then the answer). Run live evals with
+`--pace 25` to stay under that. Quota (429), overload (503) and deadline (504)
+errors are retried per case, honouring the `retry in Ns` hint when the API
+gives one (`--retries`, default 3). Anything else is recorded as an ERROR.
+
 ## How grounding works
 
 `merchant_eval.numbers.extract_numbers` finds numeric mentions in the answer:

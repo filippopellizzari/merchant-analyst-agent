@@ -3,6 +3,7 @@ import textwrap
 
 import pytest
 
+import merchant_eval.golden as golden_mod
 from merchant_eval import run as run_mod
 
 
@@ -49,7 +50,7 @@ def eval_dir(tmp_path):
                         "response": summary,
                     }
                 ],
-                "model": "gemini-2.5-flash",
+                "model": "gemini-3.5-flash",
                 "events": 4,
                 "duration_s": 2.5,
                 "golden_responses": [
@@ -69,7 +70,7 @@ def eval_dir(tmp_path):
                 "question": "Forecast February 2021 revenue.",
                 "answer": "I expect about $150,000 in February 2021, up 20%.",
                 "tool_calls": [],
-                "model": "gemini-2.5-flash",
+                "model": "gemini-3.5-flash",
                 "events": 1,
             }
         )
@@ -98,7 +99,7 @@ def test_replay_exit_code_and_report(eval_dir, capsys):
     assert set(by_id) == {"good", "bad", "nofixture"}
     assert by_id["good"]["status"] == "pass"
     assert by_id["good"]["golden"][0]["ok"] is True  # saved golden responses, no live tool
-    assert by_id["good"]["model"] == "gemini-2.5-flash"
+    assert by_id["good"]["model"] == "gemini-3.5-flash"
     assert by_id["bad"]["status"] == "fail"
     assert [u["raw"] for u in by_id["bad"]["grounding"]["ungrounded"]] == ["$150,000", "20%"]
     assert by_id["nofixture"]["status"] == "skip"
@@ -226,3 +227,97 @@ def test_repo_root_resolution():
     assert run_mod.REPO_ROOT.name == "merchant-analyst-agent"
     assert run_mod.AGENT_DIR.name == "agent"
     assert run_mod.DEFAULT_CASES == run_mod.REPO_ROOT / "eval" / "cases.yaml"
+
+
+# --------------------------------------------------------------------------
+# Retry / pacing
+# --------------------------------------------------------------------------
+
+
+
+def test_is_retryable_classifies_quota_and_overload():
+    assert run_mod.is_retryable(RuntimeError("429 RESOURCE_EXHAUSTED. Please retry in 21.9s."))
+    assert run_mod.is_retryable(RuntimeError("503 UNAVAILABLE. high demand"))
+    assert run_mod.is_retryable(RuntimeError("504 DEADLINE_EXCEEDED."))
+    assert not run_mod.is_retryable(ValueError("bad date"))
+
+
+def test_retry_delay_parses_hint_and_caps():
+    assert run_mod.retry_delay(RuntimeError("Please retry in 21.95s")) == 23.95
+    assert run_mod.retry_delay(RuntimeError("'retryDelay': '25s'")) == 27.0
+    assert run_mod.retry_delay(RuntimeError("retry in 200s")) == 90.0
+    with pytest.raises(run_mod.QuotaExhausted):
+        run_mod.retry_delay(RuntimeError("retry in 500s"))
+    assert run_mod.retry_delay(RuntimeError("nothing useful")) == 30.0
+
+
+def test_ask_with_retry_retries_then_succeeds():
+    calls = {"n": 0}
+    slept: list[float] = []
+
+    def flaky(question, **kw):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise RuntimeError("429 RESOURCE_EXHAUSTED. Please retry in 5s.")
+        return f"answer to {question}"
+
+    out = run_mod.ask_with_retry(
+        "q", retries=3, sleep=slept.append, log=lambda *_: None, ask=flaky
+    )
+    assert out == "answer to q"
+    assert calls["n"] == 3
+    assert slept == [7.0, 7.0]
+
+
+def test_ask_with_retry_gives_up_and_does_not_retry_other_errors():
+    slept: list[float] = []
+
+    def always_quota(question, **kw):
+        raise RuntimeError("429 RESOURCE_EXHAUSTED")
+
+    def bad_args(question, **kw):
+        raise ValueError("nope")
+
+    with pytest.raises(RuntimeError):
+        run_mod.ask_with_retry("q", retries=2, sleep=slept.append, log=lambda *_: None, ask=always_quota)
+    assert len(slept) == 2
+    with pytest.raises(ValueError):
+        run_mod.ask_with_retry("q", retries=2, sleep=slept.append, log=lambda *_: None, ask=bad_args)
+    assert len(slept) == 2
+
+
+def test_daily_quota_raises_quota_exhausted():
+    daily = RuntimeError(
+        "429 RESOURCE_EXHAUSTED. Quota exceeded for metric: generativelanguage.googleapis.com/"
+        "generate_content_free_tier_requests, limit: 20, model: gemini-x, description: Generate "
+        "content requests per day limit exceeded on Free Tier. Please retry in 13h26m47.75s."
+    )
+    with pytest.raises(run_mod.QuotaExhausted) as ei:
+        run_mod.retry_delay(daily)
+    assert "limit 20" in str(ei.value) and "gemini-x" in str(ei.value)
+    long_wait = RuntimeError("503 UNAVAILABLE. Please retry in 1h0m5s.")
+    with pytest.raises(run_mod.QuotaExhausted):
+        run_mod.retry_delay(long_wait)
+    assert run_mod.retry_delay(RuntimeError("Please retry in 0h2m5.5s")) == 90.0
+
+
+def test_run_cases_stops_on_quota_exhausted(monkeypatch, tmp_path):
+    cases = [
+        golden_mod.Case(id=f"c{i}", question=f"q{i}", expect_tools=[], golden=[]) for i in range(4)
+    ]
+    calls: list[str] = []
+
+    def fake_ask(question, **kw):
+        calls.append(question)
+        if len(calls) == 2:
+            raise RuntimeError("429 ... requests per day limit exceeded ... retry in 10h0m0s")
+        raise ValueError("other failure")
+
+    monkeypatch.setattr(run_mod, "_ask", fake_ask)
+    records = run_mod.run_cases(
+        cases, fixtures_dir=tmp_path, retries=3, sleep=lambda s: None, log=lambda *_: None
+    )
+    assert calls == ["q0", "q1"]
+    assert [r["status"] for r in records] == ["error", "error", "skip", "skip"]
+    assert records[1]["error"].startswith("quota exhausted")
+    assert "skipped: quota exhausted" in records[2]["error"]

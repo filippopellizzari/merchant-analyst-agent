@@ -33,7 +33,7 @@ def test_root_agent_has_seven_tools(monkeypatch):
     assert isinstance(agent, LlmAgent)
     assert agent.name == "merchant_analyst"
     assert [t.__name__ for t in agent.tools] == EXPECTED_TOOLS
-    assert agent.model == "gemini-2.5-flash"
+    assert agent.model == "gemini-3.5-flash"
     assert agent.description
     for phrase in ("ALWAYS call a tool", "2020-11-01", "2021-01-31", "clamped", "two decimals"):
         assert phrase in agent.instruction

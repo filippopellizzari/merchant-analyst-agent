@@ -11,7 +11,7 @@ from merchant_analyst.tools import ALL_TOOLS
 
 load_env()
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3.5-flash"
 DATASET_START = "2020-11-01"
 DATASET_END = "2021-01-31"
 

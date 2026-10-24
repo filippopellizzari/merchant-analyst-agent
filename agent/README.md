@@ -31,7 +31,7 @@ package) when `merchant_analyst.agent` or `merchant_analyst.runtime` is imported
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `GOOGLE_API_KEY` | – | Gemini key (AI Studio). Or set `GOOGLE_GENAI_USE_VERTEXAI=TRUE` + GCP vars. |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Model passed to `LlmAgent`. |
+| `GEMINI_MODEL` | `gemini-3.5-flash` | Model passed to `LlmAgent`. |
 | `TOOL_SERVICE_ADDRESS` | `localhost:50051` | Address of the Java gRPC tool service. |
 
 ## Run

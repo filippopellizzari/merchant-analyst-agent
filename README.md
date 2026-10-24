@@ -4,7 +4,8 @@ A chat agent that answers merchandising questions about the public
 **Google Merchandise Store** GA4 dataset in BigQuery, built so that **every
 number in an answer is traceable to a tool result**.
 
-- **Agent**: Python, [Google ADK](https://github.com/google/adk-python) 2.x, Gemini.
+- **Agent**: Python, [Google ADK](https://github.com/google/adk-python) 2.x, Gemini
+  (`gemini-3.5-flash` by default; set `GEMINI_MODEL` to change it).
 - **Tool service**: Java 21, gRPC, hand-written parameterised SQL against
   `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`.
 - **Eval harness**: runs questions through the agent, extracts every number
@@ -79,7 +80,7 @@ the BigQuery free tier. The service sets `maximumBytesBilled`
 ## Eval harness
 
 ```bash
-make eval                       # live: asks every case, checks, writes eval/reports/<ts>.{json,md}
+make eval ARGS="--pace 25"      # live: asks every case, checks, writes eval/reports/<ts>.{json,md}
 make eval ARGS="--only nov_top5_revenue,dec_funnel_dropoff"
 make eval ARGS="--record"       # also saves fixtures to eval/fixtures/
 make eval ARGS="--replay"       # re-check saved fixtures, no model or service needed
@@ -102,6 +103,9 @@ Two checks run per case, defined in [eval/cases.yaml](eval/cases.yaml):
 Cases can also require that specific tools were (or were not) called and that
 a date range was clamped. The run exits non-zero on any failure, so it can
 gate a CI job. Full details in [eval/README.md](eval/README.md).
+
+On the Gemini free tier (5 requests per minute per model) use `--pace 25`;
+quota and overload errors are retried automatically (`--retries`, default 3).
 
 ## Repository layout
 

@@ -10,8 +10,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -117,6 +119,82 @@ def _ask(question: str, **kw: Any) -> Any:
     return ask_sync(question, **kw)
 
 
+_RETRYABLE_MARKERS = ("429", "RESOURCE_EXHAUSTED", "503", "UNAVAILABLE", "504", "DEADLINE_EXCEEDED")
+_RETRY_IN = re.compile(r"retry in ([0-9.]+)s|retryDelay['\"]?: ?['\"]?([0-9.]+)s", re.IGNORECASE)
+
+
+def is_retryable(exc: BaseException) -> bool:
+    """Quota (429), overload (503) and deadline (504) errors from the model API."""
+    text = f"{type(exc).__name__}: {exc}"
+    return any(marker in text for marker in _RETRYABLE_MARKERS)
+
+
+class QuotaExhausted(RuntimeError):
+    """A quota error that will not clear within a run (e.g. the free tier's daily cap)."""
+
+
+def retry_delay(exc: BaseException, default: float = 30.0, cap: float = 90.0) -> float:
+    """Seconds to wait before retrying, taken from the error text when it says so.
+
+    Raises ``QuotaExhausted`` when the API asks for more than ``MAX_WAIT_S`` or names
+    a per-day limit: waiting inside the run would be pointless.
+    """
+    text = str(exc)
+    if "per day" in text.lower():
+        raise QuotaExhausted(_quota_summary(text)) from exc
+    m = _RETRY_IN.search(text) or _RETRY_IN_LONG.search(text)
+    if m:
+        secs = _parse_duration(m)
+        if secs > MAX_WAIT_S:
+            raise QuotaExhausted(_quota_summary(text)) from exc
+        return min(cap, secs + 2.0)
+    return default
+
+
+MAX_WAIT_S = 300.0
+_RETRY_IN_LONG = re.compile(r"retry in (?:(\d+)h)?(?:(\d+)m)?([0-9.]+)s", re.IGNORECASE)
+
+
+def _parse_duration(m: re.Match[str]) -> float:
+    groups = [g for g in m.groups() if g is not None]
+    if m.re is _RETRY_IN_LONG:
+        h, mi, s = (m.group(1) or 0), (m.group(2) or 0), (m.group(3) or 0)
+        return float(h) * 3600 + float(mi) * 60 + float(s)
+    return float(groups[0])
+
+
+def _quota_summary(text: str) -> str:
+    m = re.search(r"Quota exceeded for metric: ([^,]+), limit: (\d+), model: ([\w.-]+), description: ([^.]+)", text)
+    if m:
+        return f"{m.group(4)} (limit {m.group(2)}, model {m.group(3)})"
+    m = re.search(r"'message': '([^']+)'", text)
+    return (m.group(1) if m else text)[:200]
+
+
+def ask_with_retry(
+    question: str,
+    *,
+    retries: int = 3,
+    sleep: Callable[[float], None] = time.sleep,
+    log=print,
+    ask: Callable[..., Any] | None = None,
+    **kw: Any,
+) -> Any:
+    """Call the agent, retrying quota/overload errors up to ``retries`` times."""
+    do_ask = ask or _ask
+    attempt = 0
+    while True:
+        try:
+            return do_ask(question, **kw)
+        except Exception as e:
+            attempt += 1
+            if attempt > retries or not is_retryable(e):
+                raise
+            delay = retry_delay(e)
+            log(f"  retry {attempt}/{retries} in {delay:.0f}s ({type(e).__name__})")
+            sleep(delay)
+
+
 def run_goldens(
     case: Case, answer: str, saved: list[dict] | None = None
 ) -> tuple[list[GoldenResult], list[dict]]:
@@ -156,10 +234,13 @@ def run_cases(
     fixtures_dir: Path = DEFAULT_FIXTURES,
     fail_fast: bool = False,
     ask_kwargs: dict[str, Any] | None = None,
+    retries: int = 3,
+    pace_s: float = 0.0,
+    sleep: Callable[[float], None] = time.sleep,
     log=print,
 ) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    for case in cases:
+    for index, case in enumerate(cases):
         fixture_path = fixtures_dir / f"{case.id}.json"
         log(f"[{case.id}] {case.question}")
         if replay:
@@ -170,9 +251,28 @@ def run_cases(
             result = load_fixture(fixture_path)
             rec, _ = evaluate(case, result, result.duration_s, result.golden_responses)
         else:
+            if pace_s and index:
+                sleep(pace_s)
             t0 = time.perf_counter()
             try:
-                result = _ask(case.question, **(ask_kwargs or {}))
+                result = ask_with_retry(
+                    case.question, retries=retries, sleep=sleep, log=log, **(ask_kwargs or {})
+                )
+            except QuotaExhausted as e:
+                records.append(
+                    build_record(
+                        case, None, None, [], None,
+                        duration_s=time.perf_counter() - t0,
+                        error=f"quota exhausted: {e}",
+                    )
+                )
+                log(f"  QUOTA EXHAUSTED: {e}; skipping the remaining cases")
+                for rest in cases[index + 1 :]:
+                    records.append(
+                        build_record(rest, None, None, [], None, status="skip",
+                                     error=f"skipped: quota exhausted ({e})")
+                    )
+                break
             except Exception as e:  # noqa: BLE001 - an agent failure is an ERROR record
                 records.append(
                     build_record(
@@ -223,6 +323,16 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     p.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURES)
     p.add_argument("--reports", type=Path, default=DEFAULT_REPORTS)
     p.add_argument("--no-report", action="store_true", help="do not write report files")
+    p.add_argument(
+        "--retries", type=int, default=3, help="retries per case on 429/503/504 (default 3)"
+    )
+    p.add_argument(
+        "--pace",
+        type=float,
+        default=0.0,
+        metavar="SECONDS",
+        help="sleep between live cases; ~25 keeps the Gemini free tier (5 req/min) happy",
+    )
     return p.parse_args(argv)
 
 
@@ -248,6 +358,8 @@ def main(argv: list[str] | None = None) -> int:
         record=args.record,
         fixtures_dir=args.fixtures,
         fail_fast=args.fail_fast,
+        retries=args.retries,
+        pace_s=args.pace,
     )
     print()
     print(render_console(records))
