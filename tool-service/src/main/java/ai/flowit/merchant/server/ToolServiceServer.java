@@ -2,6 +2,7 @@ package ai.flowit.merchant.server;
 
 import ai.flowit.merchant.bigquery.BigQueryGateway;
 import ai.flowit.merchant.bigquery.BigQueryGatewayImpl;
+import ai.flowit.merchant.bigquery.CachingBigQueryGateway;
 import ai.flowit.merchant.bigquery.SqlLoader;
 import ai.flowit.merchant.config.ServiceConfig;
 import ai.flowit.merchant.service.MerchantAnalystService;
@@ -37,6 +38,9 @@ public final class ToolServiceServer {
     ServiceConfig config = ServiceConfig.fromEnv();
     SqlLoader sqlLoader = new SqlLoader();
     BigQueryGateway gateway = BigQueryGatewayImpl.create(config, sqlLoader);
+    if (config.useCache()) {
+      gateway = new CachingBigQueryGateway(gateway, CachingBigQueryGateway.DEFAULT_MAX_ENTRIES);
+    }
     ToolServiceServer server = new ToolServiceServer(config.port(), new MerchantAnalystService(gateway, sqlLoader));
     server.start();
     log.info("tool-service listening on port {} (project={}, maxBytesBilled={}, useCache={})",

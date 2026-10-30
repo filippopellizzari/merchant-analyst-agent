@@ -45,7 +45,13 @@ docker run --rm -p 50051:50051 -e GCP_PROJECT=my-project \
 | `GCP_PROJECT`         | (required)      | Project billed for BigQuery jobs                      |
 | `TOOL_SERVICE_PORT`   | `50051`         | gRPC listen port                                      |
 | `BQ_MAX_BYTES_BILLED` | `2000000000`    | `maximumBytesBilled` cap per query (2 GB)             |
-| `BQ_USE_CACHE`        | `true`          | Allow BigQuery to serve cached results                |
+| `BQ_USE_CACHE`        | `true`          | BigQuery cache + in-memory result cache (see below)   |
+
+BigQuery never caches queries over wildcard tables (`events_*`), so without help every call
+scans ~0.4 GB. With `BQ_USE_CACHE=true` the service keeps an in-memory LRU of the last 1000
+results keyed by statement and parameters (the dataset is static, so nothing expires).
+Concurrent identical calls share one BigQuery job; repeats report `bytes_processed = 0`,
+`cache_hit = true`. Failures are not cached.
 
 ## Calling it
 
@@ -72,6 +78,7 @@ src/main/java/ai/flowit/merchant/
   config/ServiceConfig            env-based configuration
   bigquery/BigQueryGateway        interface used by the service
   bigquery/BigQueryGatewayImpl    Google client implementation (named params, bytes cap, cache flag)
+  bigquery/CachingBigQueryGateway in-memory LRU result cache with request coalescing
   bigquery/SqlLoader              loads sql/<name>.sql from the classpath, SHA-256 prefix for sql_hash
   service/DateRanges              window constants, fill/clamp/validate, _TABLE_SUFFIX params
   service/MerchantAnalystService  the 7 RPCs

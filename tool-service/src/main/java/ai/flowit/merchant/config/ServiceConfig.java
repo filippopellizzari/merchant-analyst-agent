@@ -9,7 +9,8 @@ import java.util.Map;
  *   <li>{@code GCP_PROJECT} - project that is billed for the BigQuery jobs (required for the real gateway)</li>
  *   <li>{@code TOOL_SERVICE_PORT} - gRPC listen port, default 50051</li>
  *   <li>{@code BQ_MAX_BYTES_BILLED} - per-query cap passed to BigQuery, default 2 GB</li>
- *   <li>{@code BQ_USE_CACHE} - whether BigQuery may serve cached results, default true</li>
+ *   <li>{@code BQ_USE_CACHE} - whether BigQuery may serve cached results and the service keeps
+ *       an in-memory result cache, default true</li>
  * </ul>
  */
 public record ServiceConfig(String project, int port, long maxBytesBilled, boolean useCache) {
